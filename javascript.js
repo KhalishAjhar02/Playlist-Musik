@@ -557,3 +557,21 @@
     return tracks.reduce(function (p, t) { return p.then(function () { return readDuration(t); }).then(function () { render(); }); }, Promise.resolve());
   }).catch(function () { render(); });
 })();
+
+function requestPersist() {
+  try {
+    if (navigator.storage && navigator.storage.persist) {
+      navigator.storage.persist().then(function (ok) {
+        say(ok ? "Penyimpanan dibuat permanen oleh browser."
+                : "Browser belum mengizinkan penyimpanan permanen.");
+      });
+    }
+  } catch (e) {}
+}
+// panggil di bagian "muat saat dibuka", misalnya setelah loadCols();
+requestPersist();
+
+chain.then(function () {
+  say("Gagal menyimpan ke browser (penyimpanan penuh atau mode privat). File tidak tersimpan permanen.", true);
+  render();
+});
