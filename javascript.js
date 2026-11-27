@@ -13,9 +13,10 @@
   var view = "all";          // "all" atau id koleksi
   var colMode = "new";       // "new" atau "rename"
   var shuffle = false, repeat = 0, filter = "", dbp = null, seeking = false;
+  var audioOnly = false;
   var ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
   var ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
-  $("toggle").innerHTML = ICON_PLAY;
+  $("toggle").innerHTML = ICON_PLAY; video.muted = true;
 
   function isVideoFile(name, mime) {
     if (mime && mime.indexOf("video/") === 0) return true;
@@ -268,8 +269,8 @@
     }
 
     if (autoStart !== false) {
-      audio.play().catch(function () {});
-      if (isVideoFile(t.name, t.blob && t.blob.type)) video.play().catch(function () {});
+    audio.play().catch(function () {});
+    if (isVideoFile(t.name, t.blob && t.blob.type) && !audioOnly) video.play().catch(function () {});
     }
     if ("mediaSession" in navigator) {
       try { navigator.mediaSession.metadata = new MediaMetadata({ title: t.name, artist: colName(t.col) }); } catch (e) {}
@@ -355,7 +356,21 @@
     this.classList.toggle("on", repeat > 0);
     if (repeat === 2) this.setAttribute("data-badge", "1"); else this.removeAttribute("data-badge");
     this.title = "Ulangi: " + label; this.setAttribute("aria-label", this.title);
+    
   };
+  $("audioMode").onclick = function () {
+  audioOnly = !audioOnly;
+  this.classList.toggle("on", audioOnly);
+  this.title = audioOnly ? "Mode audio: nyala" : "Mode audio: mati";
+  this.setAttribute("aria-label", this.title);
+  artEl.classList.toggle("audio-only", audioOnly);
+  if (audioOnly) {
+    try { video.pause(); } catch (e) {}
+  } else if (!audio.paused && artEl.classList.contains("has-video")) {
+    try { video.currentTime = audio.currentTime; } catch (e) {}
+    video.play().catch(function () {});
+  }
+};
   if ("mediaSession" in navigator) {
     try {
       navigator.mediaSession.setActionHandler("play", toggle);
