@@ -449,7 +449,7 @@
   function render() {
     renderCols();
     var vis = visibleIdx();
-    $("listTitle").textContent = view === "all" ? "Semua musik &amp; video" : colName(view);
+    $("listTitle").textContent = view === "all" ? "Semua musik & video" : colName(view);
     $("count").textContent = vis.length + " lagu";
     $("renameCol").hidden = view === "all";
     $("delCol").hidden = view === "all" || view === DEFAULT_COL;
