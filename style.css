@@ -226,6 +226,6 @@
     * { transition: none !important; }
   }
 
-.vol .ib { width: 34px; height: 34px; flex: none; }
+  .vol .ib { width: 34px; height: 34px; flex: none; }
 .art.has-video.audio-only #videoPreview { display: none; }
 .art.has-video.audio-only .disc { display: block; }
